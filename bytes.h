@@ -16,10 +16,10 @@
 
 // Core {{{
 
-struct bytes {
+typedef struct bytes {
     void *BYTES_INTERNAL_FIELD(data);
     size_t BYTES_INTERNAL_FIELD(length);
-};
+} bytes;
 
 static inline struct bytes bytes_construct_unsafe(void *data, size_t length) {
     return (struct bytes){ .BYTES_INTERNAL_FIELD(data) = data, .BYTES_INTERNAL_FIELD(length) = length };
@@ -93,10 +93,10 @@ static inline bool bytes_copy_u64_le(struct bytes b, uint64_t x) {
 
 // Builder {{{
 
-struct bytes_builder {
+typedef struct bytes_builder {
     struct bytes BYTES_INTERNAL_FIELD(target);
     size_t BYTES_INTERNAL_FIELD(offset);
-};
+} bytes_builder;
 
 static inline void bytes_builder_init(struct bytes_builder *bb, struct bytes b) {
     *bb = (struct bytes_builder){
