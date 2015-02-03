@@ -138,4 +138,39 @@ static inline struct bytes bytes_builder_built_bytes(const struct bytes_builder 
 
 // }}}
 
+// Buffer {{{
+
+typedef struct bytes_buffer {
+    struct bytes bytes;
+    struct bytes BYTES_INTERNAL_FIELD(original);
+} bytes_buffer;
+
+static inline struct bytes_buffer bytes_buffer_from(struct bytes b) {
+    return (struct bytes_buffer){
+        .bytes = b,
+        .BYTES_INTERNAL_FIELD(original) = b,
+    };
+}
+
+static inline void bytes_buffer_reset(struct bytes_buffer *bb) {
+    struct bytes original = bb->BYTES_INTERNAL_FIELD(original);
+    assert(bytes_data(bb->bytes) >= bytes_data(original));
+    assert(bytes_data(bb->bytes) + bytes_length(bb->bytes) <= bytes_data(original) + bytes_length(original));
+    bb->bytes = original;
+    bytes_zero(bb->bytes);
+}
+
+static inline void bytes_buffer_swap(struct bytes_buffer *a, struct bytes_buffer *b) {
+    struct bytes_buffer tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+#define BYTE_BUFFER_ON_STACK(NAME, SIZE) \
+    uint8_t bytes_contents__##NAME[SIZE] = {0}; \
+    struct bytes_buffer NAME = bytes_buffer_from(BYTES_ARRAY(bytes_contents__##NAME))
+
+// }}}
+
+
 #endif
