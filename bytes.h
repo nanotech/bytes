@@ -21,9 +21,11 @@ typedef struct bytes {
     size_t BYTES_INTERNAL_FIELD(length);
 } bytes;
 
-static inline struct bytes bytes_construct_unsafe(void *data, size_t length) {
-    return (struct bytes){ .BYTES_INTERNAL_FIELD(data) = data, .BYTES_INTERNAL_FIELD(length) = length };
-}
+#define bytes_construct_unsafe(DATA, LEN)     \
+    ((bytes){                                 \
+        .BYTES_INTERNAL_FIELD(data) = (DATA), \
+        .BYTES_INTERNAL_FIELD(length) = (LEN) \
+    })
 
 // Constructors {{{
 
