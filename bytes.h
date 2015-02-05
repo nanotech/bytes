@@ -35,6 +35,10 @@ static inline struct bytes bytes_construct_unsafe(void *data, size_t length) {
     uint8_t bytes_contents__##NAME[SIZE] = {0}; \
     struct bytes NAME = BYTES_ARRAY(bytes_contents__##NAME)
 
+static inline struct bytes bytes_alloc(void *(*alloc)(size_t), size_t length) {
+    return bytes_construct_unsafe(alloc(length), length);
+}
+
 // }}}
 
 static inline uint8_t *bytes_mutable_data(struct bytes b) {
