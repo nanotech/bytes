@@ -22,7 +22,7 @@ typedef struct bytes {
 } bytes;
 
 #ifdef __cplusplus
-#define bytes_construct_unsafe(DATA, LEN) (bytes{ (DATA), (LEN) })
+#define bytes_construct_unsafe(DATA, LEN) (bytes{ reinterpret_cast<void *>(DATA), (LEN) })
 #else
 #define bytes_construct_unsafe(DATA, LEN) ((bytes){ (DATA), (LEN) })
 #endif
@@ -76,7 +76,7 @@ static inline void *bytes_internal_as_struct(bytes b, size_t sz) {
     return bytes_take(&b, b, sz) ? bytes_mutable_data(b) : NULL;
 }
 
-#define BYTES_AS_STRUCT(SP, B) ((*SP) = bytes_internal_as_struct((B), sizeof **(SP)), (*SP) != NULL)
+#define BYTES_AS_STRUCT(SP, B) ((*SP) = (__typeof__(*SP))bytes_internal_as_struct((B), sizeof **(SP)), (*SP) != NULL)
 
 static inline bool bytes_copy(struct bytes to, struct bytes from) {
     if (bytes_length(to) < bytes_length(from)) return false;
