@@ -86,6 +86,11 @@ static inline void bytes_zero(struct bytes b) {
 
 // Utilities {{{
 
+static inline void bytes_drop_all(struct bytes *b) {
+    bool valid = bytes_drop(b, *b, bytes_length(*b));
+    assert(valid); (void)valid;
+}
+
 static inline bool bytes_slice(struct bytes *to, struct bytes from, size_t offset, size_t length) {
     return bytes_drop(to, from, offset) && bytes_take(to, *to, length);
 }
