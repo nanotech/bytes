@@ -125,6 +125,15 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
 BYTES_INT_TYPES_MAP(XX)
 #undef XX
 
+// Defines bytes_read_{u,i}{16,32,64}_{le,be} for deserializing integers
+#define XX(N, S, T, E)                                                        \
+    static inline bool bytes_read_##S##N##_##E(struct bytes b, T##N##_t *x) { \
+        return bytes_copy_slice(BYTES_STRUCT(x), b, 0, sizeof *x)             \
+               && (*x = (T##N##_t)E##N##toh((uint##N##_t)*x), true);          \
+    }
+BYTES_INT_TYPES_MAP(XX)
+#undef XX
+
 // }}}
 
 // Builder {{{

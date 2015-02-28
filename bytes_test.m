@@ -76,6 +76,18 @@
     XCTAssertFalse(bytes_copy_u64_le(small, 0));
 }
 
+- (void)testReadInts {
+    BYTES_ON_STACK(small, 1);
+    BYTES_ON_STACK(b, 8);
+    uint32_t xu32 = 0x89504e47;
+    XCTAssert(bytes_copy_u32_be(b, xu32));
+    uint32_t xu32r = 3;
+    XCTAssertFalse(bytes_read_u32_be(small, &xu32r));
+    XCTAssertEqual(xu32r, 3U);
+    XCTAssert(bytes_read_u32_be(b, &xu32r));
+    XCTAssertEqual(xu32r, xu32);
+}
+
 - (void)testSlice {
 	struct bytes b = BYTES_LITERAL("Hello world!");
 	struct bytes w;
