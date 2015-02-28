@@ -53,8 +53,7 @@
 
 - (void)testBuilder {
 	BYTES_ON_STACK(buf, 12);
-	struct bytes_builder u;
-	bytes_builder_init(&u, buf);
+	struct bytes_builder u = bytes_builder_from(buf);
 
 	XCTAssert(bytes_equal(bytes_builder_built_bytes(&u), BYTES_LITERAL("")));
 	XCTAssert(bytes_builder_append(&u, BYTES_LITERAL("Hello")));

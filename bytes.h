@@ -119,9 +119,11 @@ typedef struct bytes_builder {
     size_t BYTES_INTERNAL_FIELD(offset);
 } bytes_builder;
 
-static inline void bytes_builder_init(struct bytes_builder *bb, struct bytes b) {
-    bb->BYTES_INTERNAL_FIELD(target) = b;
-    bb->BYTES_INTERNAL_FIELD(offset) = 0;
+static inline struct bytes_builder bytes_builder_from(struct bytes b) {
+    struct bytes_builder bb;
+    bb.BYTES_INTERNAL_FIELD(target) = b;
+    bb.BYTES_INTERNAL_FIELD(offset) = 0;
+    return bb;
 }
 
 static inline bool bytes_builder_append(struct bytes_builder *bb, struct bytes b) {
