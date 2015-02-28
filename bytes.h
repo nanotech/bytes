@@ -78,6 +78,10 @@ static inline bool bytes_copy(struct bytes to, struct bytes from) {
     return true;
 }
 
+static inline void bytes_zero(struct bytes b) {
+    memset(bytes_mutable_data(b), 0, bytes_length(b));
+}
+
 // }}}
 
 // Utilities {{{
