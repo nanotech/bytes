@@ -105,10 +105,25 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
     return bytes_slice(&from, from, offset, length) && bytes_copy(to, from);
 }
 
-static inline bool bytes_copy_u64_le(struct bytes b, uint64_t x) {
-    x = htole64(x);
-    return bytes_copy(b, BYTES_STRUCT(&x));
-}
+#define BYTES_INT_TYPES_MAP_0(XX, S, T, E) \
+    XX(16, S, T, E)                        \
+    XX(32, S, T, E)                        \
+    XX(64, S, T, E)
+#define BYTES_INT_TYPES_MAP_1(XX, E)      \
+    BYTES_INT_TYPES_MAP_0(XX, i, int, E)  \
+    BYTES_INT_TYPES_MAP_0(XX, u, uint, E)
+#define BYTES_INT_TYPES_MAP(XX)   \
+    BYTES_INT_TYPES_MAP_1(XX, be) \
+    BYTES_INT_TYPES_MAP_1(XX, le)
+
+// Defines bytes_copy_{u,i}{16,32,64}_{le,be} for serializing integers
+#define XX(N, S, T, E)                                                       \
+    static inline bool bytes_copy_##S##N##_##E(struct bytes b, T##N##_t x) { \
+        x = (T##N##_t)hto##E##N((uint##N##_t)x);                             \
+        return bytes_copy(b, BYTES_STRUCT(&x));                              \
+    }
+BYTES_INT_TYPES_MAP(XX)
+#undef XX
 
 // }}}
 

@@ -39,6 +39,43 @@
 	XCTAssert(memcmp(bytes_data(b), "bbbbb", 6) == 0);
 }
 
+- (void)testCopyInts {
+    uint8_t xs[8];
+    bytes b = BYTES_ARRAY(xs);
+    XCTAssert(bytes_copy_i16_be(b, 0x0305));
+    XCTAssertEqual(xs[0], 3);
+    XCTAssertEqual(xs[1], 5);
+
+    XCTAssert(bytes_copy_i16_le(b, 0x0206));
+    XCTAssertEqual(xs[0], 6);
+    XCTAssertEqual(xs[1], 2);
+
+    XCTAssert(bytes_copy_u32_be(b, 0x89504e47));
+    XCTAssertEqual(xs[0], 0x89);
+    XCTAssertEqual(xs[1], 'P');
+    XCTAssertEqual(xs[2], 'N');
+    XCTAssertEqual(xs[3], 'G');
+
+    XCTAssert(bytes_copy_u32_le(b, 0x76543210UL));
+    XCTAssertEqual(xs[0], 0x10);
+    XCTAssertEqual(xs[1], 0x32);
+    XCTAssertEqual(xs[2], 0x54);
+    XCTAssertEqual(xs[3], 0x76);
+
+    XCTAssert(bytes_copy_u64_be(b, 0x7654321001abcdefULL));
+    XCTAssertEqual(xs[0], 0x76);
+    XCTAssertEqual(xs[1], 0x54);
+    XCTAssertEqual(xs[2], 0x32);
+    XCTAssertEqual(xs[3], 0x10);
+    XCTAssertEqual(xs[4], 0x01);
+    XCTAssertEqual(xs[5], 0xab);
+    XCTAssertEqual(xs[6], 0xcd);
+    XCTAssertEqual(xs[7], 0xef);
+
+    BYTES_ON_STACK(small, 7);
+    XCTAssertFalse(bytes_copy_u64_le(small, 0));
+}
+
 - (void)testSlice {
 	struct bytes b = BYTES_LITERAL("Hello world!");
 	struct bytes w;
