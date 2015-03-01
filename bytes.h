@@ -110,12 +110,18 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
     XX(16, S, T, E)                        \
     XX(32, S, T, E)                        \
     XX(64, S, T, E)
-#define BYTES_INT_TYPES_MAP_1(XX, E)      \
-    BYTES_INT_TYPES_MAP_0(XX, i, int, E)  \
+#define BYTES_INT_TYPES_MAP_1(XX, E)     \
+    BYTES_INT_TYPES_MAP_0(XX, i, int, E) \
     BYTES_INT_TYPES_MAP_0(XX, u, uint, E)
-#define BYTES_INT_TYPES_MAP(XX)   \
-    BYTES_INT_TYPES_MAP_1(XX, be) \
-    BYTES_INT_TYPES_MAP_1(XX, le)
+#define BYTES_ENDIAN_MAP(F, XX) \
+    F(XX, be)                   \
+    F(XX, le)
+#define BYTES_INT_TYPES_MAP(XX) BYTES_ENDIAN_MAP(BYTES_INT_TYPES_MAP_1, XX)
+
+#define BYTES_FLOAT_TYPES_MAP_0(XX, E) \
+    XX(32, float, E)                   \
+    XX(64, double, E)
+#define BYTES_FLOAT_TYPES_MAP(XX) BYTES_ENDIAN_MAP(BYTES_FLOAT_TYPES_MAP_0, XX)
 
 // Defines bytes_copy_{u,i}{16,32,64}_{le,be} for serializing integers
 #define XX(N, S, T, E)                                                       \
@@ -126,6 +132,17 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
 BYTES_INT_TYPES_MAP(XX)
 #undef XX
 
+// Defines bytes_copy_{float,double}_{le,be} for serializing floats
+#define XX(N, T, E)                                                \
+    static inline bool bytes_copy_##T##_##E(struct bytes b, T x) { \
+        uint##N##_t i;                                             \
+        memcpy(&i, &x, sizeof i);                                  \
+        return bytes_copy_u##N##_##E(b, i);                        \
+    }
+BYTES_FLOAT_TYPES_MAP(XX)
+#undef XX
+//_Static_assert(sizeof i == sizeof *x, "sizes match");
+
 // Defines bytes_read_{u,i}{16,32,64}_{le,be} for deserializing integers
 #define XX(N, S, T, E)                                                        \
     static inline bool bytes_read_##S##N##_##E(struct bytes b, T##N##_t *x) { \
@@ -133,6 +150,15 @@ BYTES_INT_TYPES_MAP(XX)
                && (*x = (T##N##_t)E##N##toh((uint##N##_t)*x), true);          \
     }
 BYTES_INT_TYPES_MAP(XX)
+#undef XX
+
+// Defines bytes_copy_{float,double}_{le,be} for serializing floats
+#define XX(N, T, E)                                                             \
+    static inline bool bytes_read_##T##_##E(struct bytes b, T *x) {             \
+        uint##N##_t i;                                                          \
+        return bytes_read_u##N##_##E(b, &i) && (memcpy(x, &i, sizeof i), true); \
+    }
+BYTES_FLOAT_TYPES_MAP(XX)
 #undef XX
 
 // }}}
