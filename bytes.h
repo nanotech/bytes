@@ -14,6 +14,16 @@
 #define BYTES_INTERNAL_FIELD(NAME) INTERNAL__##NAME
 #endif
 
+#ifndef BYTES_CONSTEXPR
+#ifdef __cplusplus
+#define BYTES_CONSTEXPR inline constexpr
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#define BYTES_CONSTEXPR inline __attribute__((const)) __attribute__((always_inline))
+#else
+#define BYTES_CONSTEXPR inline
+#endif
+#endif
+
 // Core {{{
 
 typedef struct bytes {
@@ -43,15 +53,15 @@ static inline struct bytes bytes_alloc(void *(*alloc)(size_t), size_t length) {
 
 // }}}
 
-static inline uint8_t *bytes_mutable_data(struct bytes b) {
+static BYTES_CONSTEXPR uint8_t *bytes_mutable_data(struct bytes b) {
     return (uint8_t *)b.BYTES_INTERNAL_FIELD(data);
 }
 
-static inline const uint8_t *bytes_data(struct bytes b) {
+static BYTES_CONSTEXPR const uint8_t *bytes_data(struct bytes b) {
     return (const uint8_t *)b.BYTES_INTERNAL_FIELD(data);
 }
 
-static inline size_t bytes_length(struct bytes b) {
+static BYTES_CONSTEXPR size_t bytes_length(struct bytes b) {
     return b.BYTES_INTERNAL_FIELD(length);
 }
 
