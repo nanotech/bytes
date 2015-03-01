@@ -22,4 +22,8 @@
 #  define be64toh(x) OSSwapBigToHostInt64(x)
 #  define htobe64(x) OSSwapHostToBigInt64(x)
 #endif
+#define le8toh(x) (x)
+#define htole8(x) (x)
+#define be8toh(x) (x)
+#define htobe8(x) (x)
 #endif

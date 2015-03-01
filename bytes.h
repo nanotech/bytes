@@ -106,6 +106,7 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
 }
 
 #define BYTES_INT_TYPES_MAP_0(XX, S, T, E) \
+    XX(8, S, T, E)                         \
     XX(16, S, T, E)                        \
     XX(32, S, T, E)                        \
     XX(64, S, T, E)
