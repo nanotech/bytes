@@ -32,7 +32,8 @@ typedef struct bytes {
 } bytes;
 
 #ifdef __cplusplus
-#define bytes_construct_unsafe(DATA, LEN) (bytes{ reinterpret_cast<void *>(DATA), (LEN) })
+#define bytes_construct_unsafe(DATA, LEN) \
+    (bytes{ const_cast<void *>(reinterpret_cast<const void *>(DATA)), (LEN) })
 #else
 #define bytes_construct_unsafe(DATA, LEN) ((bytes){ (DATA), (LEN) })
 #endif
