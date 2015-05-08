@@ -116,6 +116,10 @@ static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t o
     return bytes_slice(&from, from, offset, length) && bytes_copy(to, from);
 }
 
+static inline bool bytes_split(struct bytes *a, struct bytes *b, struct bytes from, size_t n) {
+    return bytes_take(a, from, n) && bytes_drop(b, from, n);
+}
+
 #define BYTES_INT_TYPES_MAP_0(XX, S, T, E) \
     XX(8, S, T, E)                         \
     XX(16, S, T, E)                        \
