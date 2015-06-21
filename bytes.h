@@ -208,6 +208,11 @@ static inline struct bytes bytes_builder_built_bytes(const struct bytes_builder 
     return built;
 }
 
+static inline size_t bytes_builder_available_length(const struct bytes_builder *bb) {
+    return bytes_length(bb->BYTES_INTERNAL_FIELD(target))
+           - bb->BYTES_INTERNAL_FIELD(offset);
+}
+
 // }}}
 
 // Buffer {{{
