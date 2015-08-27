@@ -39,6 +39,16 @@
 	XCTAssert(memcmp(bytes_data(b), "bbbbb", 6) == 0);
 }
 
+- (void)testMove {
+	BYTES_ON_STACK(a, 6);
+	XCTAssert(bytes_copy(a, BYTES_LITERAL("abcde")));
+    bytes b;
+    XCTAssert(bytes_slice(&b, a, 2, 3));
+	XCTAssert(bytes_move(a, b));
+	XCTAssert(memcmp(bytes_data(a), "cdede", 6) == 0);
+	XCTAssert(memcmp(bytes_data(b), "ede", 4) == 0);
+}
+
 - (void)testCopyInts {
     uint8_t xs[8];
     bytes b = BYTES_ARRAY(xs);

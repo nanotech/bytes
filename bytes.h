@@ -95,6 +95,12 @@ static inline bool bytes_copy(struct bytes to, struct bytes from) {
     return true;
 }
 
+static inline bool bytes_move(struct bytes to, struct bytes from) {
+    if (bytes_length(to) < bytes_length(from)) return false;
+    memmove(bytes_mutable_data(to), bytes_data(from), bytes_length(from));
+    return true;
+}
+
 static inline void bytes_zero(struct bytes b) {
     memset(bytes_mutable_data(b), 0, bytes_length(b));
 }
