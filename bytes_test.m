@@ -110,6 +110,14 @@
 	XCTAssert(bytes_equal(w, BYTES_LITERAL("world")));
 }
 
+- (void)testSliceFail {
+    struct bytes b = BYTES_LITERAL("Hello");
+    struct bytes w = {0};
+    XCTAssertFalse(bytes_slice(&w, b, 4, 10));
+    XCTAssertEqual(bytes_data(w), NULL);
+    XCTAssertEqual(bytes_length(w), (size_t)0);
+}
+
 - (void)testBuilder {
 	BYTES_ON_STACK(buf, 12);
 	struct bytes_builder u = bytes_builder_from(buf);

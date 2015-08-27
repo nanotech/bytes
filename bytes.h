@@ -115,7 +115,8 @@ static inline void bytes_drop_all(struct bytes *b) {
 }
 
 static inline bool bytes_slice(struct bytes *to, struct bytes from, size_t offset, size_t length) {
-    return bytes_drop(to, from, offset) && bytes_take(to, *to, length);
+    struct bytes temp;
+    return bytes_drop(&temp, from, offset) && bytes_take(to, temp, length);
 }
 
 static inline bool bytes_copy_slice(struct bytes to, struct bytes from, size_t offset, size_t length) {
