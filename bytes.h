@@ -219,6 +219,17 @@ static inline size_t bytes_builder_available_length(const struct bytes_builder *
            - bb->BYTES_INTERNAL_FIELD(offset);
 }
 
+// O(length(built)). Removes n leading built bytes.
+static inline bool bytes_builder_shift(struct bytes_builder *bb, size_t n) {
+    struct bytes built = bytes_builder_built_bytes(bb);
+    struct bytes remaining;
+    if (!bytes_drop(&remaining, built, n)) return false;
+    bool valid = bytes_move(built, remaining);
+    assert(valid); (void)valid;
+    bb->BYTES_INTERNAL_FIELD(offset) = bytes_length(remaining);
+    return true;
+}
+
 // }}}
 
 // Buffer {{{

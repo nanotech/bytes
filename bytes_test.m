@@ -122,4 +122,14 @@
 	XCTAssert(bytes_equal(bytes_builder_built_bytes(&u), BYTES_LITERAL("Hello world!")));
 }
 
+- (void)testBuilderShift {
+	BYTES_ON_STACK(buf, 12);
+	struct bytes_builder u = bytes_builder_from(buf);
+    XCTAssertFalse(bytes_builder_shift(&u, 1));
+    XCTAssert(bytes_builder_shift(&u, 0));
+    XCTAssert(bytes_builder_append(&u, BYTES_LITERAL("Hello world!")));
+    XCTAssert(bytes_builder_shift(&u, 6));
+	XCTAssert(bytes_equal(bytes_builder_built_bytes(&u), BYTES_LITERAL("world!")));
+}
+
 @end
