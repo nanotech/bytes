@@ -11,6 +11,7 @@ struct owned_bytes {
     std::unique_ptr<uint8_t[]> data;
     size_t length;
 
+    owned_bytes() : data(nullptr), length(0) {}
     owned_bytes(size_t n) : data(new uint8_t[n]), length(n) {}
     owned_bytes(bytes b) : owned_bytes(bytes_length(b)) { bytes_copy(get(), b); }
 
